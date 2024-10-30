@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: your_database
+      MYSQL_USER: your_user
+      MYSQL_PASSWORD: your_password
+    ports:
+      - "3306:3306"
+    networks:
+      - my-network
+  
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: target_database
+      POSTGRES_USER: target_user
+      POSTGRES_PASSWORD: target_password
+    ports:
+      - "5432:5432"
+    networks:
+      - my-network
+
+  minio:
+    image: minio/minio
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    command: server /data
+    ports:
+      - "9000:9000"
+    networks:
+      - my-network
+
+  # spark-master:
+  #   image: bitnami/spark:latest
+  #   ports:
+  #     - "8080:8080"
+  #   networks:
+  #     - my-network
+  #   volumes:
+  #     - ./jars:/jars  # Để lưu trữ JAR files
+
+  # spark-worker:
+  #   image: bitnami/spark:latest
+  #   networks:
+  #     - my-network
+  #   depends_on:
+  #     - spark-master
+  #   environment:
+  #     - SPARK_MASTER_URL=spark://spark-master:7077
+  #   volumes:
+  #     - ./jars:/jars  # Để lưu trữ JAR files
+
+  spark-job:
+    image: bitnami/spark:latest
+    volumes:
+      - ./data:/data 
+      - ./jars:/jars  # Để lưu trữ JAR files
+      - ./pipeline.py:/app/pipeline.py  # Mount file pipeline.py vào thư mục trong container
+    networks:
+      - my-network
+    depends_on:
+  #   - spark-master
+      - mysql
+      - minio
+      - postgres
+    #command: ["/bin/bash", "-c", "spark-submit /app/pipeline.py"]
+    #command: ["python", " /app/pipeline.py"]
+    command: ["/bin/bash", "-c", "pip install boto3 && spark-submit --jars /jars/mysql-connector-java-9.1.0.jar,/jars/postgresql-42.7.4.jar /app/pipeline.py"]
+
+networks:
+  my-network:
+    driver: bridge
