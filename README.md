@@ -6,23 +6,27 @@ docker-compose up --build
 
 2. Nếu xuất hiện lỗi :
 ```sh
-    spark-job-1  | py4j.protocol.Py4JJavaError: An error occurred while calling o46.load.
-    spark-job-1  | : com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+spark-job-1  | py4j.protocol.Py4JJavaError: An error occurred while calling o46.load.
+spark-job-1  | : com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
 ```
 
 
 3. Ta thực hiện đổi tên host của container MySQL trong file pipeline.py Dòng thứ 19 thành : `project2-mysql-1` or `mysql`
 
-4. Sau đó thực hiên build lại docker-compose : 
-    docker-compose up --build
+4. Sau đó thực hiên build lại docker-compose :
+```sh
+docker-compose up --build
+```
 5. Sẽ gặp lỗi :
-    spark-job-1  | py4j.protocol.Py4JJavaError: An error occurred while calling o46.load.
-    spark-job-1  | : java.sql.SQLSyntaxErrorException: Table 'your_database.customer' doesn't exist
-
-    Đây là do em chưa tạo bảng customer trong mySQL,giờ sẽ truy cập vào mySQL để tạo bảng :
-    $ docker exec -it project2-mysql-1 mysql -u root -p
-    root
-
+ ```sh
+ spark-job-1  | py4j.protocol.Py4JJavaError: An error occurred while calling o46.load.
+ spark-job-1  | : java.sql.SQLSyntaxErrorException: Table 'your_database.customer' doesn't exist
+```
+Đây là do chưa tạo bảng customer trong mySQL,giờ sẽ truy cập vào mySQL để tạo bảng :
+ ```sh
+ $ docker exec -it project2-mysql-1 mysql -u root -p
+ root
+```
 6. Vào db dể tạo bảng:
     mysql> use your_database
     mysql> create table customer (Id int, CustomerId VARCHAR(200),FirstName VARCHAR(200),LastName VARCHAR(200));
