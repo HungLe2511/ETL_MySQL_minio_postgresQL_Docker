@@ -1,35 +1,38 @@
-dau tien, ta prj2. Chay cau lenh : docker-compose up --build
+1. chạy lệnh build docker : 
+    docker-compose up --build
 
-Neu xuat hien loi : 
+2. Nếu xuất hiện lỗi : 
     spark-job-1  | py4j.protocol.Py4JJavaError: An error occurred while calling o46.load.
     spark-job-1  | : com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
 
-ta thuc hien thay doi ten host trong file pipeline.py dong thu 19 thanh : project2-mysql-1 or mysql
+3. Ta thực hiện đổi tên host của container MySQL trong file pipeline.py Dòng thứ 19 thành : project2-mysql-1 or mysql
 
-sau do ta se build lai docker-compose. Se gap loi :
+4. Sau đó thực hiên build lại docker-compose : 
+    docker-compose up --build
+5. Sẽ gặp lỗi :
     spark-job-1  | py4j.protocol.Py4JJavaError: An error occurred while calling o46.load.
     spark-job-1  | : java.sql.SQLSyntaxErrorException: Table 'your_database.customer' doesn't exist
 
-    Day la do em chua tao 1 bang nao trong database cua SQL : gio ta se truy cap vao mysql tao bang :
+    Đây là do em chưa tạo bảng customer trong mySQL,giờ sẽ truy cập vào mySQL để tạo bảng :
     $ docker exec -it project2-mysql-1 mysql -u root -p
     root
 
-    Sau do vao db, tao bang :
-        mysql> use your_database
-        mysql> create table customer (Id int, CustomerId VARCHAR(200),FirstName VARCHAR(200),LastName VARCHAR(200));
+6. Vào db dể tạo bảng:
+    mysql> use your_database
+    mysql> create table customer (Id int, CustomerId VARCHAR(200),FirstName VARCHAR(200),LastName VARCHAR(200));
 
-    Insert data tu file.csv vao:
-    Day file csv vao trong mysql:
+7. Insert data từ file.csv:
+    7.1 Đẩy file.csv vào mySQL:
         docker cp customers.csv project2-mysql-1:/var/lib/mysql-files/file.csv
 
-    Sau do insert data vao bang:
+    7.2 Sau đó insert data vào bảng:
         LOAD DATA INFILE '/var/lib/mysql-files/file.csv'
         INTO TABLE customer
         FIELDS TERMINATED BY ','  
         LINES TERMINATED BY '\n'
-        IGNORE 1 ROWS;  -- Nếu dòng đầu tiên là tiêu đề
+        IGNORE 1 ROWS;
 
-    Sau do,rebuild lai docker :
+8. Sau đó,chạy lại docker :
         docker-compose up --build
 
     Ra log ntn la ok!
@@ -44,8 +47,8 @@ sau do ta se build lai docker-compose. Se gap loi :
     spark-job-1  | |  5|5820deAdCF23EFe| Kathleen|Mccormick|
     spark-job-1  | +---+---------------+---------+---------+
 
-    Tiep den ta sap gap loi~, Do minio chua tao bucket:
+9. Tiếp đến sẽ gặp lỗi, Do minio chưa tạo buget:
         spark-job-1  | : org.apache.hadoop.fs.s3a.UnknownStoreException: `s3a://test/test.parquet': getFileStatus on s3a://test/test.parquet: com.amazonaws.services.s3.model.AmazonS3Exception: The specified bucket does not exist (Service: Amazon S3; Status Code: 404; Error Code: NoSuchBucket; Request ID: 1803131AB30E82C1; S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8; Proxy: null), S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8:NoSuchBucket: The specified bucket does not exist (Service: Amazon S3; Status Code: 404; Error Code: NoSuchBucket; Request ID: 1803131AB30E82C1; S3 Extended Request ID: dd9025bab4ad464b049177c95eb6ebf374d3b3fd1af9251148b658df7ac2e3e8; Proxy: null)
-    Ta truy cap manual vao web UI bucket va tao 1 bucket ten : test
-    Sau do Rebuild lai code : docker-compose up --build
+    9.1 Truy cập vào web UI bucket và tạo 1 bucket tên : test
+    9.2 Chạy lại docker : docker-compose up --build
     Done!!
