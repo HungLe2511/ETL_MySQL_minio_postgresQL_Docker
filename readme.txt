@@ -11,7 +11,7 @@ docker-compose up --build
 ```
 
 
-3. Ta thực hiện đổi tên host của container MySQL trong file pipeline.py Dòng thứ 19 thành : project2-mysql-1 or mysql
+3. Ta thực hiện đổi tên host của container MySQL trong file pipeline.py Dòng thứ 19 thành : `project2-mysql-1` or `mysql`
 
 4. Sau đó thực hiên build lại docker-compose : 
     docker-compose up --build
