@@ -11,7 +11,7 @@ spark-job-1  | : com.mysql.cj.jdbc.exceptions.CommunicationsException: Communica
 ```
 
 
-3. Ta thực hiện đổi tên host của container MySQL trong file pipeline.py Dòng thứ 19 thành : `project2-mysql-1` or `mysql`
+2.1 Ta thực hiện đổi tên host của container MySQL trong file pipeline.py Dòng thứ 19 thành : `project2-mysql-1` or `mysql`
 
 4. Sau đó thực hiên build lại docker-compose :
 ```sh
