@@ -1,9 +1,15 @@
-1. chạy lệnh build docker : 
-    docker-compose up --build
+1. chạy lệnh build docker :
+```sh
+docker-compose up --build
+```
+    
 
-2. Nếu xuất hiện lỗi : 
+2. Nếu xuất hiện lỗi :
+```sh
     spark-job-1  | py4j.protocol.Py4JJavaError: An error occurred while calling o46.load.
     spark-job-1  | : com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+```
+
 
 3. Ta thực hiện đổi tên host của container MySQL trong file pipeline.py Dòng thứ 19 thành : project2-mysql-1 or mysql
 
