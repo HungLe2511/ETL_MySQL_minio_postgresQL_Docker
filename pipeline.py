@@ -12,7 +12,7 @@ schema = StructType([
     ])
 
 # Thiết lập URL JDBC cho MySQL container
-jdbc_url = "jdbc:mysql://project2-mysql-1:3306/your_database"  # 'mysql' là tên dịch vụ của MySQL trong Docker Compose
+jdbc_url = "jdbc:mysql://mysql:3306/your_database"  # 'mysql' là tên dịch vụ của MySQL trong Docker Compose
 table_name = "customer"
 
 # Thiết lập URL JDBC cho MySQL container
@@ -96,7 +96,7 @@ def main():
     # Bước 4: Lưu dữ liệu vào PostgreSQL
     # Ghi DataFrame xuống PostgreSQL
     minio_df.write.format("jdbc") \
-        .option("url", "jdbc:postgresql://project2-postgres-1:5432/target_database") \
+        .option("url", "jdbc:postgresql://postgres:5432/target_database") \
         .option("driver", "org.postgresql.Driver") \
         .option("dbtable", "customer") \
         .option("user", "target_user") \
